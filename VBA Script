@@ -1,0 +1,94 @@
+Sub WallStreet():
+
+
+    Dim LastRow As Long
+    LastRow = ActiveSheet.Cells(Rows.Count, "A").End(xlUp).Row
+
+
+    Dim Ticker As String
+    Dim TotalStockVolume As Double
+    
+    Dim FirstOpenValue As Double
+    
+    Dim PriceOpen As Double
+    Dim PriceClose As Double
+    
+    Dim YearlyChange As Double
+    Dim PercentChange As Double
+    Dim Summary_Table_Row As Long
+    
+    Summary_Table_Row = 2
+    FirstOpenValue = 2
+    StockValue = 0
+    
+    
+    Range("I1").Value = "Ticker"
+    Range("J1").Value = "Yearly Change"
+    Range("K1").Value = "Percent Change"
+    Range("L1").Value = "Total Stock Volume"
+    
+    ' iterate  through all rows
+        
+    For Each ws In Worksheets
+    
+    For i = 2 To LastRow
+
+        
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+                
+                ' assign values to variable
+                
+                Ticker = ws.Cells(i, 1).Value
+                
+                YearlyChange = ws.Cells(i, 6).Value - ws.Cells(FirstOpenValue, 3).Value
+                
+                PercentChange = (ws.Cells(i, 6).Value - ws.Cells(FirstOpenValue, 3).Value) / ws.Cells(FirstOpenValue, 3).Value
+                
+                TotalStockVolume = TotalStockVolume + ws.Cells(i, 7).Value
+                
+                'output stocknames and Values
+                
+                Range("I" & Summary_Table_Row).Value = Ticker
+                
+                Range("J" & Summary_Table_Row).Value = YearlyChange
+                
+                Range("K" & Summary_Table_Row).Value = PercentChange
+                
+                Range("K:K").NumberFormat = "0.00%"
+                
+                Range("L" & Summary_Table_Row).Value = TotalStockVolume
+                
+                Columns("I:L").AutoFit
+                
+                  For j = 2 To LastRow
+        
+        Cells(j, 9).FormatConditions.Delete
+        
+        If Cells(j, 10).Value > 0 Then
+        Cells(j, 10).Interior.Color = RGB(0, 255, 0)
+        
+        ElseIf Cells(j, 10).Value < 0 Then
+        Cells(j, 10).Interior.Color = RGB(255, 0, 0)
+        
+        End If
+        
+        Next j
+                
+                
+                Summary_Table_Row = Summary_Table_Row + 1
+                
+                TotalStockVolume = 0
+          Else
+            
+               TotalStockVolume = TotalStockVolume + ws.Cells(i, 7).Value
+   
+        End If
+            
+    Next i
+    
+    Next ws
+    
+  
+                
+End Sub
+
